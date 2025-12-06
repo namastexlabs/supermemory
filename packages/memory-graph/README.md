@@ -1,224 +1,94 @@
 # @supermemory/memory-graph
 
-> Interactive graph visualization component for Supermemory - visualize and explore your memory connections
+Interactive graph visualization for documents and their memory connections.
 
 [![npm version](https://img.shields.io/npm/v/@supermemory/memory-graph.svg)](https://www.npmjs.com/package/@supermemory/memory-graph)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-## Features
-
-- 🎨 **WebGL-powered rendering** - Smooth performance with hundreds of nodes using PixiJS
-- 🔍 **Interactive exploration** - Pan, zoom, drag nodes, and explore connections
-- 🧠 **Semantic connections** - Visualizes relationships based on content similarity
-- 📱 **Responsive design** - Works seamlessly on mobile and desktop
-- 🎯 **Zero configuration** - Works out of the box with automatic CSS injection
-- 📦 **Lightweight** - Tree-shakeable and optimized bundle
-- 🎭 **TypeScript** - Full TypeScript support with exported types
 
 ## Installation
 
 ```bash
 npm install @supermemory/memory-graph
 # or
-yarn add @supermemory/memory-graph
+bun add @supermemory/memory-graph
 # or
 pnpm add @supermemory/memory-graph
-# or
-bun add @supermemory/memory-graph
 ```
 
 ## Quick Start
 
 ```tsx
-import { MemoryGraph } from '@supermemory/memory-graph'
+import { MemoryGraph } from '@supermemory/memory-graph';
+import type { DocumentWithMemories } from '@supermemory/memory-graph';
 
 function App() {
+  const [documents, setDocuments] = useState<DocumentWithMemories[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/graph')
+      .then(res => res.json())
+      .then(data => {
+        setDocuments(data.documents);
+        setIsLoading(false);
+      });
+  }, []);
+
   return (
-    <MemoryGraph
-      apiKey="your-api-key"
-      id="optional-document-id"
-    />
-  )
-}
-```
-
-That's it! The CSS is automatically injected, no manual imports needed.
-
-## Usage
-
-### Basic Usage
-
-```tsx
-import { MemoryGraph } from '@supermemory/memory-graph'
-
-<MemoryGraph
-  apiKey="your-supermemory-api-key"
-  variant="console"
-/>
-```
-
-### Advanced Usage
-
-```tsx
-import { MemoryGraph } from '@supermemory/memory-graph'
-
-<MemoryGraph
-  apiKey="your-api-key"
-  id="document-123"
-  baseUrl="https://api.supermemory.ai"
-  variant="consumer"
-  showSpacesSelector={true}
-  onError={(error) => {
-    console.error('Failed to load graph:', error)
-  }}
-  onSuccess={(data) => {
-    console.log('Graph loaded:', data)
-  }}
-/>
-```
-
-## API Reference
-
-### Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `apiKey` | `string` | **required** | Your Supermemory API key |
-| `id` | `string` | `undefined` | Optional document ID to filter the graph |
-| `baseUrl` | `string` | `"https://api.supermemory.ai"` | API base URL |
-| `variant` | `"console" \| "consumer"` | `"console"` | Visual variant - console for full view, consumer for embedded |
-| `showSpacesSelector` | `boolean` | `true` | Show/hide the spaces filter dropdown |
-| `onError` | `(error: Error) => void` | `undefined` | Callback when data fetching fails |
-| `onSuccess` | `(data: any) => void` | `undefined` | Callback when data is successfully loaded |
-
-## Framework Integration
-
-### Next.js
-
-```tsx
-// app/graph/page.tsx
-'use client'
-
-import { MemoryGraph } from '@supermemory/memory-graph'
-
-export default function GraphPage() {
-  return (
-    <div className="w-full h-screen">
-      <MemoryGraph apiKey={process.env.NEXT_PUBLIC_SUPERMEMORY_API_KEY!} />
+    <div style={{ height: '100vh' }}>
+      <MemoryGraph
+        documents={documents}
+        isLoading={isLoading}
+        variant="console"
+      />
     </div>
-  )
+  );
 }
 ```
 
-### Vite/React
+## Features
 
-```tsx
-// src/App.tsx
-import { MemoryGraph } from '@supermemory/memory-graph'
+- **Interactive canvas visualization** - Pan, zoom, and drag nodes using Canvas 2D rendering
+- **Document and memory nodes** - Documents as rectangles, memories as hexagons
+- **Relationship visualization** - Edges show document similarity and memory version chains
+- **Space filtering** - Filter by workspace or view all memories
+- **Two variants** - Full-featured console mode or embedded consumer mode
+- **Pagination support** - Load more documents on demand
+- **TypeScript support** - Full type definitions included
 
-function App() {
-  return (
-    <div style={{ width: '100vw', height: '100vh' }}>
-      <MemoryGraph apiKey={import.meta.env.VITE_SUPERMEMORY_API_KEY} />
-    </div>
-  )
-}
-```
+## Essential Props
 
-### Create React App
+| Prop | Type | Description |
+|------|------|-------------|
+| `documents` | `DocumentWithMemories[]` | Array of documents with their memory entries |
+| `isLoading` | `boolean` | Show loading state |
+| `variant` | `"console" \| "consumer"` | Display mode (default: "console") |
+| `error` | `Error \| null` | Error to display |
+| `loadMoreDocuments` | `() => Promise<void>` | Function to load more data |
+| `highlightDocumentIds` | `string[]` | IDs of documents to highlight |
 
-```tsx
-// src/App.tsx
-import { MemoryGraph } from '@supermemory/memory-graph'
+## Documentation
 
-function App() {
-  return (
-    <div style={{ width: '100vw', height: '100vh' }}>
-      <MemoryGraph apiKey={process.env.REACT_APP_SUPERMEMORY_API_KEY} />
-    </div>
-  )
-}
-```
+Full documentation available at [docs.supermemory.ai](https://docs.supermemory.ai):
 
-## Getting an API Key
-
-1. Visit [supermemory.ai](https://supermemory.ai)
-2. Sign up or log in to your account
-3. Navigate to Settings > API Keys
-4. Generate a new API key
-5. Copy and use it in your application
-
-⚠️ **Security Note**: Never commit API keys to version control. Use environment variables.
-
-## Features in Detail
-
-### WebGL Rendering
-
-The graph uses PixiJS for hardware-accelerated WebGL rendering, enabling smooth interaction with hundreds of nodes and connections.
-
-### Semantic Similarity
-
-Connections between memories are visualized based on semantic similarity, with stronger connections appearing more prominent.
-
-### Interactive Controls
-
-- **Pan**: Click and drag the background
-- **Zoom**: Mouse wheel or pinch on mobile
-- **Select Node**: Click on any document or memory
-- **Drag Nodes**: Click and drag individual nodes
-- **Fit to View**: Auto-fit button to center all content
-
-### Touch Support
-
-Full support for touch gestures including pinch-to-zoom and touch-drag for mobile devices.
-
-## Browser Support
-
-- Chrome/Edge (latest)
-- Firefox (latest)
-- Safari (latest)
-- Mobile browsers with WebGL support
+- [Overview](https://docs.supermemory.ai/memory-graph/overview) - What it is and when to use it
+- [Installation](https://docs.supermemory.ai/memory-graph/installation) - Setup and requirements
+- [Quick Start](https://docs.supermemory.ai/memory-graph/quickstart) - Get running in 2 minutes
+- [API Reference](https://docs.supermemory.ai/memory-graph/api-reference) - Complete API documentation
+- [Examples](https://docs.supermemory.ai/memory-graph/examples) - Common use cases
+- [Troubleshooting](https://docs.supermemory.ai/memory-graph/troubleshooting) - Common issues
 
 ## Requirements
 
 - React 18+
-- Modern browser with WebGL support
-
-## Development
-
-```bash
-# Install dependencies
-bun install
-
-# Build the package
-bun run build
-
-# Watch mode for development
-bun run dev
-
-# Type checking
-bun run check-types
-```
+- Modern browser
 
 ## License
 
-MIT © [Supermemory](https://supermemory.ai)
+MIT
 
-## Support
+## Links
 
-- 📧 Email: support@supermemory.ai
-- 🐛 Issues: [GitHub Issues](https://github.com/supermemoryai/supermemory/issues)
-- 💬 Discord: [Join our community](https://discord.gg/supermemory)
-
-## Roadmap
-
-- [ ] Custom theme support
-- [ ] Export graph as image
-- [ ] Advanced filtering options
-- [ ] Graph animation presets
-- [ ] Accessibility improvements
-- [ ] Collaboration features
-
----
-
-Made with ❤️ by the Supermemory team
+- [GitHub](https://github.com/supermemoryai/supermemory/tree/main/packages/memory-graph)
+- [Issues](https://github.com/supermemoryai/supermemory/issues)
+- [Supermemory](https://supermemory.ai)

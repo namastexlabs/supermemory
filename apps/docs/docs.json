@@ -71,7 +71,7 @@
 						"pages": [
 							{
 								"group": "Getting Started",
-								"pages": ["intro", "routervsapi", "quickstart", "memory-vs-rag"]
+								"pages": ["intro", "quickstart", "memory-vs-rag"]
 							},
 							{
 								"group": "Memory API",
@@ -112,7 +112,6 @@
 										]
 									},
 									"search/filtering",
-									"user-profiles",
 									"memory-api/track-progress",
 									{
 										"group": "List Memories",
@@ -139,12 +138,24 @@
 											"connectors/notion",
 											"connectors/google-drive",
 											"connectors/onedrive",
+											"connectors/github",
+											"connectors/web-crawler",
 											"connectors/troubleshooting"
 										]
 									},
 									"/org-settings",
 									"/analytics",
 									"overview/use-cases"
+								]
+							},
+							{
+								"group": "User Profiles",
+								"icon": "user",
+								"pages": [
+									"user-profiles/overview",
+									"user-profiles/api",
+									"user-profiles/examples",
+									"user-profiles/use-cases"
 								]
 							},
 							{
@@ -202,6 +213,18 @@
 									"ai-sdk/memory-tools",
 									"ai-sdk/infinite-chat",
 									"ai-sdk/npm"
+								]
+							},
+							{
+								"group": "Memory Graph",
+								"icon": "network",
+								"pages": [
+									"memory-graph/overview",
+									"memory-graph/installation",
+									"memory-graph/quickstart",
+									"memory-graph/api-reference",
+									"memory-graph/examples",
+									"memory-graph/npm"
 								]
 							}
 						]
